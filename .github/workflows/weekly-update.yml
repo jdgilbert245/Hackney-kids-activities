@@ -31,5 +31,6 @@ jobs:
           prompt: |
             Today is the weekly update run. Follow the instructions in AGENT.md exactly.
           claude_args: |
-            --max-turns 80
+            --model claude-sonnet-5
+            --max-turns 150
             --allowedTools "Read,Write,Edit,WebSearch,WebFetch,Bash(curl:*),Bash(pdftotext:*),Bash(python3 -m json.tool:*),Bash(date:*),Bash(git:*),Bash(gh pr create:*)"
