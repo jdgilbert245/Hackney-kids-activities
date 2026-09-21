@@ -36,6 +36,7 @@ Venues to include: Museum of the Home, Young V&A, Hackney Museum, Sutton House, 
 
 - Only include events you found on a page you actually opened this run. Never guess or fill in missing details. If an event's day, time or age range is unclear, leave it out and list it in the pull request under "Couldn't confirm".
 - One entry per activity. A weekly session is one recurring entry, not one entry per week. Don't add duplicates of existing entries; update them instead.
+- Every entry must have a working `link`. If you can't find one, leave the event out and list it under "Couldn't confirm".
 - Only activities aimed at or suitable for children (0 to 17) and their families.
 - `ageMin`/`ageMax`: use the ages the organiser states. "Under 5s" is 0 to 4. "All ages" or "families" is 0 to 17.
 - `cost`: 0 for free. Otherwise the price of a child ticket in pounds as a number. If the price varies, use the lowest.
@@ -64,7 +65,7 @@ One-off: same fields as recurring, but `"date": "2026-10-03"` instead of `weekda
 
 - `weekdays`: 1 = Monday ... 7 = Sunday.
 - `id`: short lowercase slug, unique and stable across runs.
-- `link`: the best page for families to find out more or book. `source`: the page where you found it.
+- `link`: required. The most specific page where families can check the details or book: the event's own page or booking page if there is one, otherwise the venue's what's-on page. Never a homepage if a more specific page exists. `source`: the page where you found it (can be the same as `link`).
 - Times are 24-hour, "HH:MM".
 
 ## Pull request description
