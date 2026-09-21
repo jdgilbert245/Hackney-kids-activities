@@ -101,6 +101,7 @@ h1 {
 .plan li.napitem { color: var(--muted); }
 .plan li .v { color: var(--muted); font-size: .85rem; }
 .plan .actions { display: flex; gap: .5rem; margin-top: .8rem; }
+.daysel { appearance: auto; }
 .sep { width: 1px; height: 1.6rem; background: var(--line); margin: 0 .25rem; }
 
 .note {
@@ -157,7 +158,7 @@ footer p { color: var(--muted); font-size: .9rem; }
 <div class="wrap">
   <header>
     <h1>Kids' week in Hackney</h1>
-    <p class="intro">Free and low-cost things to do with children across the borough collected in one place.</p>
+    <p class="intro">Free and low-cost things to do with children across the borough.</p>
     <p class="note" id="examplenote" hidden>These are example listings to show how the calendar works. Real events will replace them.</p>
   </header>
 
@@ -172,7 +173,7 @@ footer p { color: var(--muted); font-size: .9rem; }
     <span class="lbl">Ages</span>
     <div id="ages" style="display:contents"></div>
     <span class="sep" aria-hidden="true"></span>
-    <button class="chip" id="freeonly" aria-pressed="false">Free only</button>
+    <button class="chip" id="freeonly" aria-pressed="false" data-gc="free-only">Free only</button>
   </div>
   <div class="filters" role="group" aria-label="Filter by time of day">
     <span class="lbl">Time</span>
@@ -181,7 +182,7 @@ footer p { color: var(--muted); font-size: .9rem; }
   <div class="filters" role="group" aria-label="Times to avoid">
     <span class="lbl">Avoid</span>
     <div id="naps" style="display:contents"></div>
-    <button class="chip" id="addnap" aria-expanded="false">Add nap time</button>
+    <button class="chip" id="addnap" aria-expanded="false" data-gc="add-nap">Add nap time</button>
     <span id="napform" class="napform" hidden>
       <label>From <input type="time" id="napfrom" value="12:30"></label>
       <label>to <input type="time" id="napto" value="14:30"></label>
@@ -192,8 +193,9 @@ footer p { color: var(--muted); font-size: .9rem; }
   <section class="planner" aria-label="Plan around naps">
     <div class="filters">
       <span class="lbl">Plan</span>
-      <button class="chip savenap" id="planday">Plan my day</button>
-      <button class="chip savenap" id="planweek">Plan my week</button>
+      <select class="chip daysel" id="planwhich" aria-label="Day to plan"></select>
+      <button class="chip savenap" id="planday" data-gc="plan-day">Plan this day</button>
+      <button class="chip savenap" id="planweek" data-gc="plan-week">Plan my week</button>
       <span class="napform">
         <label>Day from <input type="time" id="daystart" value="08:00"></label>
         <label>to <input type="time" id="dayend" value="18:00"></label>
@@ -205,7 +207,7 @@ footer p { color: var(--muted); font-size: .9rem; }
   <main class="days" id="days"></main>
 
   <footer>
-    <a class="submit" href="#" id="submitlink">Add an event</a>
+    <a class="submit" href="#" id="submitlink" data-gc="add-event">Add an event</a>
     <p>Know about something we've missed? Anyone can add an event. We check each one before it appears.</p>
     <p id="updated"></p>
   </footer>
@@ -295,7 +297,7 @@ function render() {
       <span class="dow">${DOW[i]}</span><span class="dnum">${d.getDate()}</span>
       <span class="count">${evs.filter(e => !e.dropIn).length || ""}</span></a>`);
     const timed = evs.filter(e => !e.dropIn), drops = evs.filter(e => e.dropIn);
-    const infoHtml = e => { const u = e.link || e.source; return u ? `<a class="more" href="${esc(u)}" target="_blank" rel="noopener">${e.booking ? "Book or find out more" : "Find out more"} \u2192</a>` : ""; };
+    const infoHtml = e => { const u = e.link || e.source; return u ? `<a class="more" data-gc="info-${esc(e.id || "")}" href="${esc(u)}" target="_blank" rel="noopener">${e.booking ? "Book or find out more" : "Find out more"} \u2192</a>` : ""; };
     const nameHtml = e => e.link ? `<a href="${esc(e.link)}" target="_blank" rel="noopener">${esc(e.title)}</a>` : esc(e.title);
     const cards = timed.map(e => `<article class="ev ${e.cost ? "paid" : ""}">
         <div class="time">${e.start} to ${e.end}</div>
@@ -316,6 +318,14 @@ function render() {
       </section>`);
   }
   document.getElementById("strip").innerHTML = strip.join("");
+  const sel = document.getElementById("planwhich"), prevSel = sel.dataset.week == state.weekOffset ? sel.value : null;
+  const todayIdx = state.weekOffset === 0 ? (TODAY.getDay() + 6) % 7 : 0;
+  sel.innerHTML = [0,1,2,3,4,5,6].map(i => {
+    const d = new Date(mon); d.setDate(d.getDate() + i);
+    const lbl = sameDay(d, TODAY) ? "Today" : DOW[i] + " " + d.getDate();
+    return `<option value="${i}">${lbl}</option>`;
+  }).join("");
+  sel.value = prevSel !== null ? prevSel : todayIdx; sel.dataset.week = state.weekOffset;
   document.getElementById("days").innerHTML = days.join("");
 }
 
@@ -407,8 +417,7 @@ function planDay(i, d, used) {
 
 function makePlan(kind) {
   const mon = new Date(THIS_MON); mon.setDate(mon.getDate() + state.weekOffset * 7);
-  const todayIdx = state.weekOffset === 0 ? (TODAY.getDay() + 6) % 7 : 0;
-  const idxs = kind === "day" ? [todayIdx] : [0,1,2,3,4,5,6];
+  const idxs = kind === "day" ? [+document.getElementById("planwhich").value] : [0,1,2,3,4,5,6];
   const used = new Set();
   const days = idxs.map(i => { const d = new Date(mon); d.setDate(d.getDate() + i); return { i, d, items: planDay(i, d, used) }; });
   lastPlan = kind;
@@ -429,6 +438,7 @@ function makePlan(kind) {
   document.getElementById("closeplan").addEventListener("click", () => { document.getElementById("planout").innerHTML = ""; lastPlan = null; });
 }
 document.getElementById("planday").addEventListener("click", () => makePlan("day"));
+document.getElementById("planwhich").addEventListener("change", () => { if (lastPlan === "day") makePlan("day"); });
 document.getElementById("planweek").addEventListener("click", () => makePlan("week"));
 ["daystart", "dayend"].forEach(id => document.getElementById(id).addEventListener("change", ev => {
   try { localStorage.setItem("hkw-" + id, ev.target.value); } catch (e) {}
@@ -472,6 +482,15 @@ fetch("events.json", { cache: "no-store" })
   })
   .catch(() => { document.getElementById("days").innerHTML = '<p class="empty">Listings could not be loaded. Refresh the page to try again.</p>'; });
 render();
+</script>
+<!-- Visit counting with GoatCounter (no cookies). Replace YOUR-CODE with your GoatCounter site code. -->
+<script data-goatcounter="https://YOUR-CODE.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script>
+document.addEventListener("click", ev => {
+  const el = ev.target.closest("[data-gc]");
+  if (el && window.goatcounter && window.goatcounter.count)
+    window.goatcounter.count({ path: "click/" + el.dataset.gc, title: el.textContent.trim().slice(0, 60), event: true });
+});
 </script>
 </body>
 </html>
