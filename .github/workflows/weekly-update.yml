@@ -1,0 +1,35 @@
+name: Weekly events update
+
+on:
+  schedule:
+    - cron: "0 5 * * 1"   # Mondays 05:00 UTC
+  workflow_dispatch:       # run it by hand from the Actions tab
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install PDF tools
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
+
+      - uses: anthropics/claude-code-action@v1
+        env:
+          GH_TOKEN: ${{ github.token }}
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Using a Claude subscription instead? Swap the line above for:
+          # claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            Today is the weekly update run. Follow the instructions in AGENT.md exactly.
+          claude_args: |
+            --max-turns 80
+            --allowedTools "Read,Write,Edit,WebSearch,WebFetch,Bash(curl:*),Bash(pdftotext:*),Bash(python3 -m json.tool:*),Bash(date:*),Bash(git:*),Bash(gh pr create:*)"
