@@ -1,0 +1,179 @@
+{
+  "updated": "2026-09-21",
+  "events": [
+    {
+      "id": "example-stay-play-ann-tayler",
+      "example": true,
+      "title": "Stay and play drop-in",
+      "venue": "Ann Tayler Children & Family Hub, E8",
+      "weekdays": [
+        1,
+        3
+      ],
+      "start": "10:00",
+      "end": "11:45",
+      "ageMin": 0,
+      "ageMax": 5,
+      "cost": 0,
+      "booking": false,
+      "link": "",
+      "source": ""
+    },
+    {
+      "id": "example-messy-play-linden",
+      "example": true,
+      "title": "Messy play",
+      "venue": "Linden Children & Family Hub, N16",
+      "weekdays": [
+        2
+      ],
+      "start": "09:30",
+      "end": "11:30",
+      "ageMin": 0,
+      "ageMax": 5,
+      "cost": 0,
+      "booking": false,
+      "link": "",
+      "source": ""
+    },
+    {
+      "id": "example-rhyme-time-central",
+      "example": true,
+      "title": "Rhyme time",
+      "venue": "Hackney Central Library, E8",
+      "weekdays": [
+        4
+      ],
+      "start": "10:30",
+      "end": "11:00",
+      "ageMin": 0,
+      "ageMax": 4,
+      "cost": 0,
+      "booking": false,
+      "link": "",
+      "source": ""
+    },
+    {
+      "id": "example-parent-baby-screening",
+      "example": true,
+      "title": "Parent and baby film screening",
+      "venue": "Rio Cinema, Dalston, E8",
+      "weekdays": [
+        5
+      ],
+      "start": "11:00",
+      "end": "13:00",
+      "ageMin": 0,
+      "ageMax": 1,
+      "cost": 8,
+      "booking": true,
+      "link": "",
+      "source": ""
+    },
+    {
+      "id": "example-family-craft-museum-home",
+      "example": true,
+      "title": "Family craft afternoon",
+      "venue": "Museum of the Home, E2",
+      "date": "2026-09-26",
+      "start": "13:00",
+      "end": "16:00",
+      "ageMin": 3,
+      "ageMax": 11,
+      "cost": 0,
+      "booking": false,
+      "link": "",
+      "source": ""
+    },
+    {
+      "id": "example-family-swim-britannia",
+      "example": true,
+      "title": "Family swim",
+      "venue": "Britannia Leisure Centre, N1",
+      "weekdays": [
+        7
+      ],
+      "start": "09:00",
+      "end": "11:00",
+      "ageMin": 0,
+      "ageMax": 17,
+      "cost": 4.5,
+      "booking": false,
+      "link": "",
+      "source": ""
+    },
+    {
+      "id": "example-museum-of-the-home",
+      "example": true,
+      "dropIn": true,
+      "title": "Museum of the Home",
+      "venue": "Hoxton, E2",
+      "weekdays": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "start": "10:00",
+      "end": "17:00",
+      "ageMin": 0,
+      "ageMax": 17,
+      "cost": 0,
+      "booking": false,
+      "note": "Gardens and family trails",
+      "link": "",
+      "source": ""
+    },
+    {
+      "id": "example-young-va",
+      "example": true,
+      "dropIn": true,
+      "title": "Young V&A",
+      "venue": "Bethnal Green, E2",
+      "weekdays": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "start": "10:00",
+      "end": "17:45",
+      "ageMin": 0,
+      "ageMax": 14,
+      "cost": 0,
+      "booking": false,
+      "note": "",
+      "link": "",
+      "source": ""
+    },
+    {
+      "id": "example-hackney-city-farm",
+      "example": true,
+      "dropIn": true,
+      "title": "Hackney City Farm",
+      "venue": "Goldsmiths Row, E2",
+      "weekdays": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "start": "10:00",
+      "end": "16:30",
+      "ageMin": 0,
+      "ageMax": 17,
+      "cost": 0,
+      "booking": false,
+      "note": "",
+      "link": "",
+      "source": ""
+    }
+  ]
+}

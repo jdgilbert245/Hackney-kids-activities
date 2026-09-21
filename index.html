@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kids' week in Hackney</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #F2F7F3;
+  --card: #FFFFFF;
+  --ink: #1B2B3A;
+  --muted: #56687A;
+  --park: #1F6E4E;
+  --park-soft: #D5EBDF;
+  --sun: #FFCE3A;
+  --sun-ink: #3A2A00;
+  --line: #CFDDD4;
+  --free: #1F6E4E;
+  --paid: #8A4B9E;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0F1A16; --card: #17251F; --ink: #E7F0EA; --muted: #9DB2A6;
+    --park: #6CCB9C; --park-soft: #1F3A2E; --sun: #FFCE3A; --sun-ink: #2A1F00;
+    --line: #2A3F35; --free: #6CCB9C; --paid: #D39BE3;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0F1A16; --card: #17251F; --ink: #E7F0EA; --muted: #9DB2A6;
+  --park: #6CCB9C; --park-soft: #1F3A2E; --sun: #FFCE3A; --sun-ink: #2A1F00;
+  --line: #2A3F35; --free: #6CCB9C; --paid: #D39BE3;
+}
+*, *::before, *::after { box-sizing: inherit; }
+html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font-family: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 1rem; line-height: 1.5;
+}
+a { color: var(--park); }
+:focus-visible { outline: 3px solid var(--sun); outline-offset: 2px; border-radius: 4px; }
+
+.wrap { max-width: 78rem; margin: 0 auto; padding: 0 1rem; }
+
+header { padding: 1.75rem 0 1rem; }
+h1 {
+  font-family: "Bricolage Grotesque", "Arial Rounded MT Bold", system-ui, sans-serif;
+  font-weight: 800; font-size: clamp(2rem, 7vw, 3.4rem); line-height: 1; letter-spacing: -0.02em;
+  margin: 0 0 .5rem;
+}
+.intro { color: var(--muted); margin: 0; max-width: 38rem; }
+
+/* Week strip: the memorable element */
+.weeknav { display: flex; align-items: center; gap: .5rem; margin: 1.25rem 0 .75rem; }
+.weeknav h2 {
+  font-family: "Bricolage Grotesque", system-ui, sans-serif; font-weight: 700;
+  font-size: 1.15rem; margin: 0; flex: 1;
+}
+.navbtn {
+  font: inherit; font-weight: 700; border: 2px solid var(--ink); background: var(--card); color: var(--ink);
+  border-radius: 999px; min-width: 2.75rem; height: 2.75rem; padding: 0 .9rem; cursor: pointer;
+}
+.navbtn:disabled { opacity: .35; cursor: default; }
+.strip { display: grid; grid-template-columns: repeat(7, 1fr); gap: .35rem; }
+.strip a {
+  display: flex; flex-direction: column; align-items: center; text-decoration: none; color: var(--ink);
+  background: var(--card); border: 2px solid var(--line); border-radius: 14px; padding: .4rem 0 .5rem;
+}
+.strip .dow { font-size: .8rem; color: var(--muted); }
+.strip .dnum { font-family: "Bricolage Grotesque", system-ui, sans-serif; font-weight: 800; font-size: 1.5rem; line-height: 1.1; }
+.strip .count { font-size: .75rem; font-weight: 700; color: var(--park); min-height: 1.1em; }
+.strip a.today { background: var(--sun); border-color: var(--sun); color: var(--sun-ink); }
+.strip a.today .dow, .strip a.today .count { color: var(--sun-ink); }
+
+/* Filters */
+.filters { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin: .75rem 0 0; }
+.filters .lbl { min-width: 2.6rem; }
+.filters .lbl { font-weight: 700; margin-right: .25rem; }
+.chip {
+  font: inherit; font-size: .95rem; border: 2px solid var(--line); background: var(--card); color: var(--ink);
+  border-radius: 999px; padding: .35rem .85rem; cursor: pointer; min-height: 2.5rem;
+}
+.chip[aria-pressed="true"] { background: var(--park); border-color: var(--park); color: var(--card); }
+.chip.nap { background: var(--sun); border-color: var(--sun); color: var(--sun-ink); }
+.napform { display: inline-flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+.napform input { font: inherit; border: 2px solid var(--line); border-radius: 8px; padding: .25rem .4rem; background: var(--card); color: var(--ink); }
+.chip.savenap { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.plan { background: var(--card); border: 2px solid var(--ink); border-radius: 14px; padding: .9rem 1rem; margin-top: .9rem; }
+.plan h3 { font-family: "Bricolage Grotesque", system-ui, sans-serif; margin: 0 0 .25rem; font-size: 1.2rem; }
+.plan .hint { color: var(--muted); font-size: .85rem; margin: 0 0 .6rem; }
+.plan h4 { margin: .8rem 0 .3rem; font-size: 1rem; }
+.plan ol { list-style: none; margin: 0; padding: 0; }
+.plan li { display: grid; grid-template-columns: 7.5rem 1fr; gap: .5rem; padding: .3rem 0; border-top: 1px solid var(--line); font-size: .95rem; }
+.plan li .t { font-weight: 700; color: var(--muted); }
+.plan li.napitem { color: var(--muted); }
+.plan li .v { color: var(--muted); font-size: .85rem; }
+.plan .actions { display: flex; gap: .5rem; margin-top: .8rem; }
+.sep { width: 1px; height: 1.6rem; background: var(--line); margin: 0 .25rem; }
+
+.note {
+  background: var(--park-soft); border-radius: 10px; padding: .6rem .9rem; font-size: .9rem; margin: .75rem 0 0;
+}
+
+/* Days */
+.days { display: grid; gap: 1.25rem; margin: 1.25rem 0 2rem; }
+.day h3 {
+  font-family: "Bricolage Grotesque", system-ui, sans-serif; font-weight: 700; font-size: 1.2rem;
+  margin: 0 0 .5rem; padding: .35rem 0; position: sticky; top: env(safe-area-inset-top, 0px);
+  background: var(--paper); z-index: 1;
+}
+.day.is-today h3 span { background: var(--sun); color: var(--sun-ink); border-radius: 6px; padding: 0 .35rem; }
+.ev {
+  background: var(--card); border: 1px solid var(--line); border-left: 5px solid var(--park);
+  border-radius: 10px; padding: .7rem .85rem; margin-bottom: .6rem;
+}
+.ev.paid { border-left-color: var(--paid); }
+.ev .time { font-weight: 700; font-size: .9rem; color: var(--muted); }
+.ev .title { font-weight: 700; font-size: 1.05rem; margin: .1rem 0; }
+.ev .venue { font-size: .92rem; color: var(--muted); }
+.tags { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .45rem; }
+.tag { font-size: .8rem; font-weight: 700; border-radius: 6px; padding: .05rem .45rem; border: 1px solid var(--line); }
+.tag.free { color: var(--free); border-color: var(--free); }
+.tag.cost { color: var(--paid); border-color: var(--paid); }
+.dropins h4 { font-size: .85rem; font-weight: 700; color: var(--muted); margin: .8rem 0 .35rem; }
+.drop {
+  background: var(--park-soft); border-radius: 8px; padding: .4rem .6rem; margin-bottom: .35rem; font-size: .9rem;
+}
+.drop .name { font-weight: 700; }
+.drop .name a { color: inherit; }
+.drop .meta { color: var(--muted); font-size: .85rem; }
+.empty { color: var(--muted); font-size: .92rem; padding: .5rem 0; }
+
+@media (min-width: 60rem) {
+  .days { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: .6rem; align-items: start; }
+  .day h3 { position: static; font-size: 1rem; }
+  .ev { padding: .55rem .6rem; }
+  .ev .title { font-size: .95rem; }
+}
+
+footer { border-top: 2px solid var(--line); padding: 1.5rem 0 2.5rem; }
+.submit {
+  display: inline-block; background: var(--sun); color: var(--sun-ink); font-weight: 700; text-decoration: none;
+  border-radius: 999px; padding: .75rem 1.3rem; font-size: 1.05rem;
+}
+footer p { color: var(--muted); font-size: .9rem; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Kids' week in Hackney</h1>
+    <p class="intro">Free and low-cost things to do with children across the borough, gathered in one place so nobody has to keep track alone.</p>
+    <p class="note" id="examplenote" hidden>These are example listings to show how the calendar works. Real events will replace them.</p>
+  </header>
+
+  <nav class="weeknav" aria-label="Choose week">
+    <button class="navbtn" id="prev" aria-label="Previous week">‹</button>
+    <h2 id="weeklabel" aria-live="polite"></h2>
+    <button class="navbtn" id="next" aria-label="Next week">›</button>
+  </nav>
+  <div class="strip" id="strip"></div>
+
+  <div class="filters" role="group" aria-label="Filter events">
+    <span class="lbl">Ages</span>
+    <div id="ages" style="display:contents"></div>
+    <span class="sep" aria-hidden="true"></span>
+    <button class="chip" id="freeonly" aria-pressed="false">Free only</button>
+  </div>
+  <div class="filters" role="group" aria-label="Filter by time of day">
+    <span class="lbl">Time</span>
+    <div id="times" style="display:contents"></div>
+  </div>
+  <div class="filters" role="group" aria-label="Times to avoid">
+    <span class="lbl">Avoid</span>
+    <div id="naps" style="display:contents"></div>
+    <button class="chip" id="addnap" aria-expanded="false">Add nap time</button>
+    <span id="napform" class="napform" hidden>
+      <label>From <input type="time" id="napfrom" value="12:30"></label>
+      <label>to <input type="time" id="napto" value="14:30"></label>
+      <button class="chip savenap" id="savenap">Save</button>
+    </span>
+  </div>
+
+  <section class="planner" aria-label="Plan around naps">
+    <div class="filters">
+      <span class="lbl">Plan</span>
+      <button class="chip savenap" id="planday">Plan my day</button>
+      <button class="chip savenap" id="planweek">Plan my week</button>
+      <span class="napform">
+        <label>Day from <input type="time" id="daystart" value="08:00"></label>
+        <label>to <input type="time" id="dayend" value="18:00"></label>
+      </span>
+    </div>
+    <div id="planout" aria-live="polite"></div>
+  </section>
+
+  <main class="days" id="days"></main>
+
+  <footer>
+    <a class="submit" href="#" id="submitlink">Add an event</a>
+    <p>Know about something we've missed? Anyone can add an event. We check each one before it appears.</p>
+    <p id="updated"></p>
+  </footer>
+</div>
+
+<script>
+let EVENTS = [];
+let UPDATED = null;
+
+const AGE_BANDS = [
+  { label: "Under 2", min: 0, max: 1 },
+  { label: "2 to 4", min: 2, max: 4 },
+  { label: "5 to 11", min: 5, max: 11 },
+  { label: "12+", min: 12, max: 99 },
+];
+
+const TIME_BANDS = [
+  { label: "Morning", from: "00:00", to: "12:00" },
+  { label: "Afternoon", from: "12:00", to: "17:00" },
+  { label: "Evening", from: "17:00", to: "24:00" },
+];
+const state = { weekOffset: 0, ages: new Set(), times: new Set(), naps: [], freeOnly: false };
+const DOW = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+const DOW_LONG = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+
+function mondayOf(d) {
+  const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  const wd = (x.getDay() + 6) % 7;
+  x.setDate(x.getDate() - wd);
+  return x;
+}
+const TODAY = new Date(); TODAY.setHours(0,0,0,0);
+const THIS_MON = mondayOf(TODAY);
+
+function sameDay(a,b){ return a.getTime() === b.getTime(); }
+function fmtCost(c){ return c === 0 ? "Free" : "£" + (Number.isInteger(c) ? c : c.toFixed(2)); }
+function ageText(e){ return e.ageMax >= 17 ? (e.ageMin === 0 ? "All ages" : e.ageMin + "+") : e.ageMin + " to " + e.ageMax + " yrs"; }
+
+function passes(e) {
+  if (state.freeOnly && e.cost !== 0) return false;
+  if (state.naps.some(n => e.dropIn ? (e.start >= n.from && e.end <= n.to) : (e.start < n.to && e.end > n.from))) return false;
+  if (state.times.size && !TIME_BANDS.some((b,i) => state.times.has(i) && e.start < b.to && e.end > b.from)) return false;
+  if (state.ages.size === 0) return true;
+  return AGE_BANDS.some((b,i) => state.ages.has(i) && e.ageMin <= b.max && e.ageMax >= b.min);
+}
+
+function iso(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function eventsForDay(date) {
+  const d = iso(date), wd = (date.getDay() + 6) % 7 + 1;
+  return EVENTS.filter(e => {
+    if (e.date) return e.date === d;
+    if (e.closed && e.closed.includes(d)) return false;
+    if (e.weekdays) return e.weekdays.includes(wd) && (!e.from || e.from <= d) && (!e.until || e.until >= d);
+    return false;
+  }).filter(passes).sort((a,b) => a.start.localeCompare(b.start));
+}
+
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function render() {
+  const mon = new Date(THIS_MON); mon.setDate(mon.getDate() + state.weekOffset * 7);
+  const sun = new Date(mon); sun.setDate(sun.getDate() + 6);
+  const optsD = { day: "numeric", month: "short" };
+  const label = state.weekOffset === 0 ? "This week" : state.weekOffset === 1 ? "Next week" : "Week of";
+  document.getElementById("weeklabel").textContent =
+    label + ", " + mon.toLocaleDateString("en-GB", optsD) + " to " + sun.toLocaleDateString("en-GB", optsD);
+  document.getElementById("prev").disabled = state.weekOffset <= 0;
+  document.getElementById("next").disabled = state.weekOffset >= 3;
+
+  const strip = []; const days = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(mon); d.setDate(d.getDate() + i);
+    const evs = eventsForDay(d);
+    const isToday = sameDay(d, TODAY);
+    strip.push(`<a href="#day-${i}" class="${isToday ? "today" : ""}">
+      <span class="dow">${DOW[i]}</span><span class="dnum">${d.getDate()}</span>
+      <span class="count">${evs.filter(e => !e.dropIn).length || ""}</span></a>`);
+    const timed = evs.filter(e => !e.dropIn), drops = evs.filter(e => e.dropIn);
+    const nameHtml = e => e.link ? `<a href="${esc(e.link)}" target="_blank" rel="noopener">${esc(e.title)}</a>` : esc(e.title);
+    const cards = timed.map(e => `<article class="ev ${e.cost ? "paid" : ""}">
+        <div class="time">${e.start} to ${e.end}</div>
+        <div class="title">${nameHtml(e)}</div>
+        <div class="venue">${esc(e.venue)}</div>
+        <div class="tags">
+          <span class="tag">${ageText(e)}</span>
+          <span class="tag ${e.cost ? "cost" : "free"}">${fmtCost(e.cost)}</span>
+          ${e.booking ? '<span class="tag">Booking needed</span>' : ""}
+        </div></article>`).join("");
+    const dropHtml = drops.length ? `<div class="dropins"><h4>Open to drop in</h4>${drops.map(e => `<div class="drop">
+        <div class="name">${nameHtml(e)}</div>
+        <div class="meta">${e.start} to ${e.end}, ${fmtCost(e.cost)}${e.note ? ". " + esc(e.note) : ""}</div></div>`).join("")}</div>` : "";
+    days.push(`<section class="day ${isToday ? "is-today" : ""}" id="day-${i}">
+      <h3><span>${DOW_LONG[i]} ${d.getDate()} ${d.toLocaleDateString("en-GB", {month:"short"})}</span></h3>
+      ${cards}${dropHtml}
+      ${cards || dropHtml ? "" : '<p class="empty">Nothing matches these filters. Try another age or add an event you know about.</p>'}
+      </section>`);
+  }
+  document.getElementById("strip").innerHTML = strip.join("");
+  document.getElementById("days").innerHTML = days.join("");
+}
+
+// Filters
+const agesEl = document.getElementById("ages");
+AGE_BANDS.forEach((b, i) => {
+  const btn = document.createElement("button");
+  btn.className = "chip"; btn.textContent = b.label; btn.setAttribute("aria-pressed", "false");
+  btn.addEventListener("click", () => {
+    state.ages.has(i) ? state.ages.delete(i) : state.ages.add(i);
+    btn.setAttribute("aria-pressed", state.ages.has(i)); save(); render();
+  });
+  agesEl.appendChild(btn);
+});
+const timesEl = document.getElementById("times");
+TIME_BANDS.forEach((b, i) => {
+  const btn = document.createElement("button");
+  btn.className = "chip"; btn.textContent = b.label; btn.setAttribute("aria-pressed", "false");
+  btn.addEventListener("click", () => {
+    state.times.has(i) ? state.times.delete(i) : state.times.add(i);
+    btn.setAttribute("aria-pressed", state.times.has(i)); save(); render();
+  });
+  timesEl.appendChild(btn);
+});
+const napsEl = document.getElementById("naps"), napForm = document.getElementById("napform"), addNap = document.getElementById("addnap");
+function renderNaps() {
+  napsEl.innerHTML = "";
+  state.naps.forEach((n, i) => {
+    const b = document.createElement("button");
+    b.className = "chip nap"; b.textContent = n.from + " to " + n.to + " \u2715";
+    b.setAttribute("aria-label", "Remove avoided time " + n.from + " to " + n.to);
+    b.addEventListener("click", () => { state.naps.splice(i, 1); renderNaps(); save(); render(); });
+    napsEl.appendChild(b);
+  });
+  addNap.textContent = state.naps.length ? "Add another" : "Add nap time";
+}
+addNap.addEventListener("click", () => {
+  napForm.hidden = !napForm.hidden; addNap.setAttribute("aria-expanded", !napForm.hidden);
+  if (!napForm.hidden) document.getElementById("napfrom").focus();
+});
+document.getElementById("savenap").addEventListener("click", () => {
+  const from = document.getElementById("napfrom").value, to = document.getElementById("napto").value;
+  if (!from || !to || from >= to) return;
+  state.naps.push({ from, to }); napForm.hidden = true; addNap.setAttribute("aria-expanded", "false");
+  renderNaps(); save(); render();
+});
+// Rules-based planner: 30 min travel between everything, random pick of what fits
+const TRAVEL = 30, VISIT = 90;
+const toM = t => +t.slice(0,2) * 60 + +t.slice(3,5);
+const fmM = m => String(Math.floor(m / 60)).padStart(2, "0") + ":" + String(m % 60).padStart(2, "0");
+const keyOf = e => e.id || (e.title + "|" + e.venue);
+let lastPlan = null;
+
+function planDay(i, d, used) {
+  const dayS = toM(document.getElementById("daystart").value || "08:00");
+  const dayE = toM(document.getElementById("dayend").value || "18:00");
+  const evs = eventsForDay(d);
+  const naps = state.naps.map(n => ({ s: toM(n.from), e: toM(n.to) }))
+    .filter(n => n.e > dayS && n.s < dayE).sort((a, b) => a.s - b.s);
+  const items = [];
+  const windows = []; let c = dayS;
+  naps.forEach(n => {
+    windows.push([c, n.s - TRAVEL]);
+    items.push({ s: n.s, e: n.e, nap: true }); c = n.e + TRAVEL;
+  });
+  windows.push([c, dayE]);
+  windows.forEach(([a, b]) => {
+    let cur = a;
+    while (true) {
+      const fits = [];
+      evs.forEach(e => {
+        if (used.has(keyOf(e))) return;
+        if (e.dropIn) {
+          const st = Math.max(cur, toM(e.start)), en = st + VISIT;
+          if (en <= Math.min(b, toM(e.end))) fits.push({ ev: e, s: st, e: en });
+        } else {
+          const st = toM(e.start), en = toM(e.end);
+          if (st >= cur && en <= b) fits.push({ ev: e, s: st, e: en });
+        }
+      });
+      if (!fits.length) break;
+      const timed = fits.filter(f => !f.ev.dropIn), pool = timed.length ? timed : fits;
+      const pick = pool[Math.floor(Math.random() * pool.length)];
+      items.push(pick); used.add(keyOf(pick.ev)); cur = pick.e + TRAVEL;
+    }
+  });
+  return items.sort((x, y) => x.s - y.s);
+}
+
+function makePlan(kind) {
+  const mon = new Date(THIS_MON); mon.setDate(mon.getDate() + state.weekOffset * 7);
+  const todayIdx = state.weekOffset === 0 ? (TODAY.getDay() + 6) % 7 : 0;
+  const idxs = kind === "day" ? [todayIdx] : [0,1,2,3,4,5,6];
+  const used = new Set();
+  const days = idxs.map(i => { const d = new Date(mon); d.setDate(d.getDate() + i); return { i, d, items: planDay(i, d, used) }; });
+  lastPlan = kind;
+  const html = days.map(({ i, d, items }) => {
+    const acts = items.filter(x => !x.nap);
+    const rows = items.map(x => x.nap
+      ? `<li class="napitem"><span class="t">${fmM(x.s)} to ${fmM(x.e)}</span><span>Nap</span></li>`
+      : `<li><span class="t">${fmM(x.s)} to ${fmM(x.e)}</span><span>${esc(x.ev.title)}${x.ev.dropIn ? " (drop in)" : ""}<br><span class="v">${esc(x.ev.venue)}, ${fmtCost(x.ev.cost)}${x.ev.booking ? ", booking needed" : ""}</span></span></li>`).join("");
+    return `<h4>${DOW_LONG[i]} ${d.getDate()} ${d.toLocaleDateString("en-GB", { month: "short" })}</h4>
+      ${acts.length ? `<ol>${rows}</ol>` : '<p class="hint">Nothing fits around naps with the current filters.</p>'}`;
+  }).join("");
+  document.getElementById("planout").innerHTML = `<div class="plan">
+    <h3>${kind === "day" ? "Your day" : "Your week"}</h3>
+    <p class="hint">Picked at random from what fits, with 30 minutes to get between things. Uses your filters.</p>
+    ${html}
+    <div class="actions"><button class="chip savenap" id="shuffle">Shuffle</button><button class="chip" id="closeplan">Close</button></div></div>`;
+  document.getElementById("shuffle").addEventListener("click", () => makePlan(kind));
+  document.getElementById("closeplan").addEventListener("click", () => { document.getElementById("planout").innerHTML = ""; lastPlan = null; });
+}
+document.getElementById("planday").addEventListener("click", () => makePlan("day"));
+document.getElementById("planweek").addEventListener("click", () => makePlan("week"));
+["daystart", "dayend"].forEach(id => document.getElementById(id).addEventListener("change", ev => {
+  try { localStorage.setItem("hkw-" + id, ev.target.value); } catch (e) {}
+  if (lastPlan) makePlan(lastPlan);
+}));
+try { ["daystart", "dayend"].forEach(id => { const v = localStorage.getItem("hkw-" + id); if (v) document.getElementById(id).value = v; }); } catch (e) {}
+
+const freeBtn = document.getElementById("freeonly");
+freeBtn.addEventListener("click", () => {
+  state.freeOnly = !state.freeOnly; freeBtn.setAttribute("aria-pressed", state.freeOnly); save(); render();
+});
+document.getElementById("prev").addEventListener("click", () => { state.weekOffset--; render(); });
+document.getElementById("next").addEventListener("click", () => { state.weekOffset++; render(); });
+
+// Remember a visitor's filters on their own device
+function save() {
+  try { localStorage.setItem("hkw-filters", JSON.stringify({ ages: [...state.ages], times: [...state.times], naps: state.naps, freeOnly: state.freeOnly })); } catch (e) {}
+}
+try {
+  const saved = JSON.parse(localStorage.getItem("hkw-filters") || "null");
+  if (saved) {
+    saved.ages.forEach(i => state.ages.add(i)); (saved.times || []).forEach(i => state.times.add(i)); state.naps = saved.naps || []; renderNaps(); state.freeOnly = !!saved.freeOnly;
+    [...timesEl.children].forEach((b,i) => b.setAttribute("aria-pressed", state.times.has(i)));
+    [...agesEl.children].forEach((b,i) => b.setAttribute("aria-pressed", state.ages.has(i)));
+    freeBtn.setAttribute("aria-pressed", state.freeOnly);
+  }
+} catch (e) {}
+
+document.getElementById("submitlink").addEventListener("click", ev => {
+  ev.preventDefault(); alert("The submission form will go here once it's set up.");
+});
+
+fetch("events.json", { cache: "no-store" })
+  .then(r => r.json())
+  .then(data => {
+    EVENTS = data.events || []; UPDATED = data.updated;
+    document.getElementById("examplenote").hidden = !EVENTS.some(e => e.example);
+    if (UPDATED) document.getElementById("updated").textContent = "Listings are checked every week. Last updated " +
+      new Date(UPDATED + "T12:00:00").toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" }) + ".";
+    render();
+  })
+  .catch(() => { document.getElementById("days").innerHTML = '<p class="empty">Listings could not be loaded. Refresh the page to try again.</p>'; });
+render();
+</script>
+</body>
+</html>
