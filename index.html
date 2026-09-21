@@ -134,6 +134,7 @@ h1 {
 .drop .name { font-weight: 700; }
 .drop .name a { color: inherit; }
 .drop .meta { color: var(--muted); font-size: .85rem; }
+.more { display: inline-block; margin-top: .45rem; font-weight: 700; font-size: .9rem; }
 .empty { color: var(--muted); font-size: .92rem; padding: .5rem 0; }
 
 @media (min-width: 60rem) {
@@ -283,6 +284,7 @@ function render() {
       <span class="dow">${DOW[i]}</span><span class="dnum">${d.getDate()}</span>
       <span class="count">${evs.filter(e => !e.dropIn).length || ""}</span></a>`);
     const timed = evs.filter(e => !e.dropIn), drops = evs.filter(e => e.dropIn);
+    const infoHtml = e => { const u = e.link || e.source; return u ? `<a class="more" href="${esc(u)}" target="_blank" rel="noopener">${e.booking ? "Book or find out more" : "Find out more"} \u2192</a>` : ""; };
     const nameHtml = e => e.link ? `<a href="${esc(e.link)}" target="_blank" rel="noopener">${esc(e.title)}</a>` : esc(e.title);
     const cards = timed.map(e => `<article class="ev ${e.cost ? "paid" : ""}">
         <div class="time">${e.start} to ${e.end}</div>
@@ -292,10 +294,10 @@ function render() {
           <span class="tag">${ageText(e)}</span>
           <span class="tag ${e.cost ? "cost" : "free"}">${fmtCost(e.cost)}</span>
           ${e.booking ? '<span class="tag">Booking needed</span>' : ""}
-        </div></article>`).join("");
+        </div>${infoHtml(e)}</article>`).join("");
     const dropHtml = drops.length ? `<div class="dropins"><h4>Open to drop in</h4>${drops.map(e => `<div class="drop">
         <div class="name">${nameHtml(e)}</div>
-        <div class="meta">${e.start} to ${e.end}, ${fmtCost(e.cost)}${e.note ? ". " + esc(e.note) : ""}</div></div>`).join("")}</div>` : "";
+        <div class="meta">${e.start} to ${e.end}, ${fmtCost(e.cost)}${e.note ? ". " + esc(e.note) : ""}</div>${infoHtml(e)}</div>`).join("")}</div>` : "";
     days.push(`<section class="day ${isToday ? "is-today" : ""}" id="day-${i}">
       <h3><span>${DOW_LONG[i]} ${d.getDate()} ${d.toLocaleDateString("en-GB", {month:"short"})}</span></h3>
       ${cards}${dropHtml}
@@ -403,7 +405,7 @@ function makePlan(kind) {
     const acts = items.filter(x => !x.nap);
     const rows = items.map(x => x.nap
       ? `<li class="napitem"><span class="t">${fmM(x.s)} to ${fmM(x.e)}</span><span>Nap</span></li>`
-      : `<li><span class="t">${fmM(x.s)} to ${fmM(x.e)}</span><span>${esc(x.ev.title)}${x.ev.dropIn ? " (drop in)" : ""}<br><span class="v">${esc(x.ev.venue)}, ${fmtCost(x.ev.cost)}${x.ev.booking ? ", booking needed" : ""}</span></span></li>`).join("");
+      : `<li><span class="t">${fmM(x.s)} to ${fmM(x.e)}</span><span>${(x.ev.link || x.ev.source) ? `<a href="${esc(x.ev.link || x.ev.source)}" target="_blank" rel="noopener">${esc(x.ev.title)}</a>` : esc(x.ev.title)}${x.ev.dropIn ? " (drop in)" : ""}<br><span class="v">${esc(x.ev.venue)}, ${fmtCost(x.ev.cost)}${x.ev.booking ? ", booking needed" : ""}</span></span></li>`).join("");
     return `<h4>${DOW_LONG[i]} ${d.getDate()} ${d.toLocaleDateString("en-GB", { month: "short" })}</h4>
       ${acts.length ? `<ol>${rows}</ol>` : '<p class="hint">Nothing fits around naps with the current filters.</p>'}`;
   }).join("");
