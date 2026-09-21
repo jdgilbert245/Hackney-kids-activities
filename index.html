@@ -254,13 +254,24 @@ function passes(e) {
 
 function iso(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
 function eventsForDay(date) {
-  const d = iso(date), wd = (date.getDay() + 6) % 7 + 1;
-  return EVENTS.filter(e => {
-    if (e.date) return e.date === d;
-    if (e.closed && e.closed.includes(d)) return false;
-    if (e.weekdays) return e.weekdays.includes(wd) && (!e.from || e.from <= d) && (!e.until || e.until >= d);
-    return false;
-  }).filter(passes).sort((a,b) => a.start.localeCompare(b.start));
+  const d = iso(date), wd = (date.getDay() + 6) % 7 + 1, today = iso(TODAY);
+  const weekOfMonth = Math.ceil(date.getDate() / 7);
+  const plus7 = new Date(date); plus7.setDate(plus7.getDate() + 7);
+  const lastOfMonth = plus7.getMonth() !== date.getMonth();
+  return EVENTS.map(e => {
+    if (e.checkBy && e.checkBy < today) return null;          // hand-added entry past its recheck date
+    if (e.closed && e.closed.includes(d)) return null;
+    let on = false;
+    if (e.date) on = e.date === d;
+    else if (e.monthly) {
+      const weeks = [].concat(e.monthly.week);
+      on = e.monthly.weekday === wd && (weeks.includes(weekOfMonth) || (weeks.includes(-1) && lastOfMonth));
+    } else if (e.weekdays) on = e.weekdays.includes(wd);
+    if (!on) return null;
+    if (!e.date && ((e.from && e.from > d) || (e.until && e.until < d))) return null;
+    const h = e.hours && e.hours[wd];                          // different hours on this weekday
+    return h ? Object.assign({}, e, { start: h[0], end: h[1] }) : e;
+  }).filter(Boolean).filter(passes).sort((a,b) => a.start.localeCompare(b.start));
 }
 
 function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
