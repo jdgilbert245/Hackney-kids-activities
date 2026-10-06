@@ -2,8 +2,8 @@ name: Weekly events update
 
 on:
   schedule:
-    - cron: "0 5 * * 1"   # Mondays 05:00 UTC
-  workflow_dispatch:       # run it by hand from the Actions tab
+    - cron: "0 5 * * 1"   # Mondays 05:00 UTC; the gate below skips even ISO weeks, so it runs fortnightly
+  workflow_dispatch:       # run it by hand from the Actions tab (always runs)
 
 jobs:
   update:
@@ -18,19 +18,29 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Fortnightly gate
+        id: gate
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ $(( 10#$(date +%V) % 2 )) -eq 1 ]; then
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "go=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Install PDF tools
+        if: steps.gate.outputs.go == 'true'
         run: sudo apt-get update && sudo apt-get install -y poppler-utils
 
       - uses: anthropics/claude-code-action@v1
+        if: steps.gate.outputs.go == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          show_full_output: true
           # Using a Claude subscription instead? Swap the line above for:
           # claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           prompt: |
-            Today is the weekly update run. Follow the instructions in AGENT.md exactly.
+            Today is the update run. Follow the instructions in AGENT.md exactly.
           claude_args: |
             --model claude-sonnet-5
             --max-turns 150
