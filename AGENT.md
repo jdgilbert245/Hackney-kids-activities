@@ -40,12 +40,12 @@ Venues to include: Museum of the Home, Young V&A, Hackney Museum, Sutton House, 
 
 - If a fact's recheck date hasn't passed, treat it as confirmed and use it to fill the gap it covers. The session itself must still appear on a source you opened this run; if it has disappeared, remove the entry as usual.
 - If a fact's recheck date has passed, don't use it. Leave that event out and list the fact under "Hand checks due".
-- Also list under "Hand checks due" any fact whose recheck date is in the next 14 days.
+- Also list under "Hand checks due" any fact whose recheck date is in the next 21 days.
 - Never edit `checked-by-hand.md` yourself.
 
 ## Hand-added entries
 
-Entries in `events.json` with `"manual": true` were added by a person because their source can't be read automatically. Don't edit or remove them. They carry a `checkBy` date, after which the website hides them. List any with a `checkBy` date in the next 14 days, or already past, under "Hand checks due".
+Entries in `events.json` with `"manual": true` were added by a person because their source can't be read automatically. Don't edit or remove them. They carry a `checkBy` date, after which the website hides them. List any with a `checkBy` date in the next 21 days, or already past, under "Hand checks due".
 
 ## Rules
 
