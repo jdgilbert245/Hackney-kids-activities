@@ -13,6 +13,7 @@ You maintain `events.json`, the data behind a public weekly calendar of activiti
 7. Set `"updated"` to today's date.
 8. Check the file is valid: `python3 -m json.tool events.json`.
 9. Create a branch named `weekly-update-YYYY-MM-DD`, commit, push, and open a pull request with `gh pr create`.
+10. Do all research yourself, one source at a time. Do not use subagents, background tasks or scheduling tools. Do not end your turn until the pull request is open.
 
 ## Sources
 
