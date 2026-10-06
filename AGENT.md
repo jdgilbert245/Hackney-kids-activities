@@ -26,7 +26,6 @@ You maintain `events.json`, the data behind a public weekly calendar of activiti
 - Young V&A, Bethnal Green
 - Hackney Museum, Sutton House, Hackney City Farm
 - Baby and parent-and-baby cinema screenings: Hackney Picturehouse, Rio Cinema (Dalston), and any others in or near Hackney
-- Eventbrite searches for children's and family events in Hackney
 - Love Hackney magazine - https://www.lovehackney.uk/whats-on
 
 ## Drop-in venues
