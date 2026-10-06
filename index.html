@@ -478,7 +478,7 @@ fetch("events.json", { cache: "no-store" })
   .then(data => {
     EVENTS = data.events || []; UPDATED = data.updated;
     document.getElementById("examplenote").hidden = !EVENTS.some(e => e.example);
-    if (UPDATED) document.getElementById("updated").textContent = "Listings are checked every week. Last updated " +
+    if (UPDATED) document.getElementById("updated").textContent = "Listings are checked every two weeks. Last updated " +
       new Date(UPDATED + "T12:00:00").toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" }) + ".";
     render();
   })
