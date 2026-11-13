@@ -12,7 +12,7 @@ You maintain `events.json`, the data behind a public weekly calendar of activiti
 6. Run a few open web searches (e.g. "kids activities Hackney this week", "family events Hackney half term") for anything the sources miss.
 7. Set `"updated"` to today's date.
 8. Check the file is valid: `python3 -m json.tool events.json`.
-9. Create a branch named `weekly-update-YYYY-MM-DD`, commit, push, and open a pull request with `gh pr create`.
+9. Create a branch named `weekly-update-YYYY-MM-DD`, commit, push, and open a pull request with `gh pr create`. Merge the PR to main so that info on the website is up to date but the PR is a record of what you do each week.
 10. Do all research yourself, one source at a time. Do not use subagents, background tasks or scheduling tools. Do not end your turn until the pull request is open.
 
 ## Sources
@@ -27,6 +27,7 @@ You maintain `events.json`, the data behind a public weekly calendar of activiti
 - Hackney Museum, Sutton House, Hackney City Farm
 - Baby and parent-and-baby cinema screenings: Hackney Picturehouse, Rio Cinema (Dalston), and any others in or near Hackney
 - Love Hackney magazine - https://www.lovehackney.uk/whats-on
+- Wild things from https://oodance.co.uk/
 
 ## Drop-in venues
 
